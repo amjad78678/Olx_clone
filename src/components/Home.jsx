@@ -2,6 +2,7 @@ import React from 'react'
 import ProductCard from './ProductCard'
 
 const Home = () => {
+  
   return (
    <>
     <div className='bg-gray-50 shadow-md py-2'>

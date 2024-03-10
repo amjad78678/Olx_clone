@@ -1,8 +1,9 @@
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
 import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { auth } from '../firebase/config'
-import { FirebaseContext } from '../store/FirebaseContext'
+import { auth, db } from '../firebase/config'
+import { FirebaseContext } from '../store/Context'  
+import { addDoc, collection } from '@firebase/firestore'
 
 
 
@@ -19,35 +20,39 @@ const Signup = () => {
    event.preventDefault()
 
    console.log('iamcontext',app)
+   try{
 
-    await createUserWithEmailAndPassword(auth, email, password)
-      .then((userCredential) => {
+    const userCredential=await createUserWithEmailAndPassword(auth, email, password)
+    
         // Signed in
         const user = userCredential.user;
 
         updateProfile(user, {
           displayName: userName,
-        });
-        //now we are updated the username
-        console.log('created user',user);
-        navigate("/login")
+        })
+         
+            const usersCollectionRef = collection(db, "Users");
+            await addDoc(usersCollectionRef, { userName: userName, uid: user.uid })
+              //now we are updated the username
+              console.log('created user', user);
+              navigate("/login")
+      
     
-      })
-      .catch((error) => {
+      }catch(error){
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
         // ..
-      });
+      }
 
 
   }
 
   return (
-    <div className='bg-gray-100 grid grid-cols-12 pb-5'>
+    <div className='bg-gray-100 grid grid-cols-12 h-screen pb-5'>
 
       <span className='col-span-4'></span>
-      <div className='col-span-4 m-10 bg-white rounded-xl'>
+      <div className='col-span-4 m-10 bg-white h-3/4 my-auto rounded-xl'>
 
       <Link to={'/'}> <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="m-7 w-7 h-7 cursor-pointer">
           <path strokeLinecap="round" strokeLinejoin="round" d="M9 15 3 9m0 0 6-6M3 9h12a6 6 0 0 1 0 12h-3" />
@@ -59,7 +64,7 @@ const Signup = () => {
 
           <input onChange={(e)=>setUserName(e.target.value)} className='py-2 px-2 border-2 w-3/4 rounded-lg mt-10 border-black' type="text" placeholder='Username' />
           <input onChange={(e)=>setEmail(e.target.value)} className='py-2 px-2 border-2 w-3/4 rounded-lg mt-5 border-black' type="text" placeholder='Email' />
-          <input onChange={(e)=>setPassword(e.target.value)} className='py-2 px-2 border-2 w-3/4 rounded-lg mt-5 border-black' type="text" placeholder='Password' />
+          <input onChange={(e)=>setPassword(e.target.value)} className='py-2 px-2 border-2 w-3/4 rounded-lg mt-5 border-black' type="password" placeholder='Password' />
 
           <button onClick={(e)=>handleCreate(e)} className='w-3/4 bg-black text-white font-bold text-center text-lg rounded-md py-3 mt-10'>Create</button>
 
