@@ -1,7 +1,27 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ProductCard from './ProductCard'
+import { collection, getDocs } from '@firebase/firestore';
+import { db } from '../firebase/config';
 
 const Home = () => {
+
+  const [products,setProducts]=useState([])
+  console.log('iam products', products)
+  const productsCollectionRef = collection(db, "Products");
+
+  const getProducts = async () => {
+    const data = await getDocs(productsCollectionRef);
+    console.log('iam data', data)
+    data.docs.map((doc) => console.log({ ...doc.data(), id: doc.id }))
+    setProducts(data.docs.map((doc) => ({ ...doc.data(), id: doc.id })));
+  };
+
+  useEffect(()=>{
+
+    getProducts()
+
+  },[])
+
   
   return (
    <>
@@ -23,16 +43,9 @@ const Home = () => {
       <h1 className='text-2xl my-6'>Fresh recommendations</h1>
           
          <div className='grid grid-cols-4 gap-4'>
-          <ProductCard/>
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-          <ProductCard />
-
-
+          {products.map((product)=>
+          <ProductCard key={product.id} imageUrl={product.imageUrl} name={product.name} price={product.price} fullProduct={product} location={product.location}/>
+          )}
          </div>
 
       </div>

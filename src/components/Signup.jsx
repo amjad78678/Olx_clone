@@ -15,6 +15,7 @@ const Signup = () => {
   const [userName,setUserName]=useState(null)
   const [email,setEmail]=useState(null)
   const [password,setPassword]=useState(null)
+  const [phone,setPhone]=useState(null)
 
   const handleCreate=async(event)=>{
    event.preventDefault()
@@ -32,7 +33,7 @@ const Signup = () => {
         })
          
             const usersCollectionRef = collection(db, "Users");
-            await addDoc(usersCollectionRef, { userName: userName, uid: user.uid })
+            await addDoc(usersCollectionRef, { userName: userName, uid: user.uid,phone:phone })
               //now we are updated the username
               console.log('created user', user);
               navigate("/login")
@@ -63,12 +64,13 @@ const Signup = () => {
           <h1 className='font-bold text-xl mt-6'>Create your Account </h1>
 
           <input onChange={(e)=>setUserName(e.target.value)} className='py-2 px-2 border-2 w-3/4 rounded-lg mt-10 border-black' type="text" placeholder='Username' />
+          <input onChange={(e) => setPhone(e.target.value)} className='py-2 px-2 border-2 w-3/4 rounded-lg mt-5 border-black' type="text" placeholder='Phone Number' />
           <input onChange={(e)=>setEmail(e.target.value)} className='py-2 px-2 border-2 w-3/4 rounded-lg mt-5 border-black' type="text" placeholder='Email' />
           <input onChange={(e)=>setPassword(e.target.value)} className='py-2 px-2 border-2 w-3/4 rounded-lg mt-5 border-black' type="password" placeholder='Password' />
 
           <button onClick={(e)=>handleCreate(e)} className='w-3/4 bg-black text-white font-bold text-center text-lg rounded-md py-3 mt-10'>Create</button>
 
-          <Link to={'/login'}><p className='underline my-20'>Login with Account</p></Link>
+          <Link to={'/login'}><p className='underline my-10'>Login with Account</p></Link>
 
         </div>
 

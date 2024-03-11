@@ -52,7 +52,7 @@ function Footer() {
             </div>
             <div className="bg-[#002f34]">
                 <div className='container mx-auto h-16  flex justify-between text-white text-xs items-center' >
-                    <h1>Help - Sitemap</h1>
+                    <h1>amjadali©rights</h1>
                     <h1>All rights reserved © 2006-2024 OLX</h1>
                 </div>
             </div>

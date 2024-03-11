@@ -31,7 +31,7 @@ const Header = () => {
    
       <div className='col-span-2 flex'>
        <img className='p-4 w-20' src="/olx-logo.png" alt="" />
-       <input type="text" placeholder='Enter Text to Search' className='px-1 my-2 py-2 border-2 border-black'/>
+       <input type="text" placeholder='Your Location' className='px-1 my-2 py-2 border-2 border-black'/>
 
       </div>
       
@@ -46,7 +46,7 @@ const Header = () => {
 
         <div className="right-nav flex flex-1 h-full items-center justify-around">
           <div  className='nav-text hover:text-cyan-800 hover:cursor-pointer font-bold'>ENGLISH</div>
-          <Link to={'/sellProduct'}> <button className='nav-text px-6 py-1 bg-white rounded-3xl sell-button flex items-center'><FaPlus className='mr-1' />SELL</button></Link>
+          {user == null ? <Link to={'/login'}> <button className='nav-text px-6 py-1 bg-white rounded-3xl sell-button flex items-center'><FaPlus className='mr-1' />SELL</button></Link> : <Link to={'/sellProduct'}> <button className='nav-text px-6 py-1 bg-white rounded-3xl sell-button flex items-center'><FaPlus className='mr-1' />SELL</button></Link>}
 
 
           {user == null ? <div className='nav-text underline hover:cursor-pointer font-bold'><Link to={'/login'}>Login</Link></div> :<> <div className=' text-lg hover:cursor-pointer font-bold'>{user.displayName}</div>   <span onClick={handleSignout} className='flex cursor-pointer'>Logout <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
@@ -54,11 +54,7 @@ const Header = () => {
           </svg>
           </span></>}
          
-        
         </div>
-    
-
-
       
       </div>
 
