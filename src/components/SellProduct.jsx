@@ -9,6 +9,7 @@ import {
 import { toast } from 'react-toastify';
 import { UserContext } from '../App';
 import { addDoc, collection } from '@firebase/firestore';
+import { checkValidData } from '../validation/sellProductValidate';
 
 const SellProduct = () => {
 
@@ -24,6 +25,10 @@ const SellProduct = () => {
 
     const handleSubmit = () => {
 
+       const message = checkValidData(productName,category,price,location)
+        toast(message)
+        
+       if(message==null){
         if (image === null) {
             toast.error('Please select an image before submit');
             return; // Stop further execution
@@ -74,8 +79,8 @@ const SellProduct = () => {
 
                     })
 
-
-
+                
+                
 
 
 
@@ -83,9 +88,12 @@ const SellProduct = () => {
                         toast.error(error.message);
                     });
             })
+        
             .catch((error) => {
                 toast.error(error.message);
             });
+
+        }
     };
     return (
         <div className='bg-gray-100 grid grid-cols-12 pb-5'>

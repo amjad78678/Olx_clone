@@ -1,8 +1,10 @@
 import { signInWithEmailAndPassword } from 'firebase/auth'
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useNavigate } from 'react-router-dom'
 import { auth } from '../firebase/config'
+import { toast } from 'react-toastify'
+import { checkValidData } from '../validation/signinValidate'
 
 const Login = () => {
 
@@ -10,22 +12,37 @@ const Login = () => {
   const [email,setEmail]=useState(null)
   const [password,setPassword]=useState(null)
   const [errorMessage,setErrorMessage]=useState(null)
+  const emailRef = useRef(null)
+  const passwordRef = useRef(null)
 
   const handleLogin=(event)=>{
   event.preventDefault()
+
+
+    const message = checkValidData(emailRef.current.value, passwordRef.current.value)
+    console.log('iam message', message)
+    console.log(emailRef.current.value)
+    toast.error(message)
+
+    if(message==null){
+
+    
 
     signInWithEmailAndPassword(auth, email, password)
       .then((userCredential) => {
         // Signed in
         const user = userCredential.user;
+        toast.success('success')
         navigate("/")   
         console.log('iam logined user',user);
       })
       .catch((error) => {
         const errorCode = error.code;
         const errorMessage = error.message;
-        setErrorMessage(errorMessage)
+        toast.error(errorMessage)
       });
+
+    }
 
   }
 
@@ -43,12 +60,12 @@ const Login = () => {
 
           <h1 className='font-bold text-xl mt-6'>Enter Email and Password </h1>
 
-          <input onChange={(e)=>setEmail(e.target.value)} className='py-2 px-2 border-2 w-3/4 rounded-lg mt-10 border-black' type="text" placeholder='Email' />
-          <input onChange={(e)=>setPassword(e.target.value)} className='py-2 px-2 border-2 w-3/4 rounded-lg mt-5 border-black' type="password" placeholder='Password' />
+          <input ref={emailRef} onChange={(e)=>setEmail(e.target.value)} className='py-2 px-2 border-2 w-3/4 rounded-lg mt-10 border-black' type="text" placeholder='Email' />
+          <input ref={passwordRef} onChange={(e)=>setPassword(e.target.value)} className='py-2 px-2 border-2 w-3/4 rounded-lg mt-5 border-black' type="password" placeholder='Password' />
 
           <button onClick={(e)=>handleLogin(e)} className='w-3/4 bg-black text-white font-bold text-center text-lg rounded-md py-3 mt-10'>Login</button>
 
-          <p className='mt-6 font-semibold text-red-500'>{errorMessage}</p>
+          <p className='mt-6 font-semibold text-red-500'>{errorMessage}</p>  
 
           <Link to={'/signup'}><p className='underline my-14'>Create an account</p></Link>
 

@@ -1,9 +1,11 @@
 import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useRef, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { auth, db } from '../firebase/config'
 import { FirebaseContext } from '../store/Context'  
 import { addDoc, collection } from '@firebase/firestore'
+import { toast } from 'react-toastify'
+import { checkValidData } from '../validation/signupValidate'
 
 
 
@@ -17,12 +19,25 @@ const Signup = () => {
   const [password,setPassword]=useState(null)
   const [phone,setPhone]=useState(null)
 
+
+  const emailRef = useRef(null)
+  const passwordRef = useRef(null)
+  const nameRef = useRef(null)
+
+
   const handleCreate=async(event)=>{
    event.preventDefault()
 
    console.log('iamcontext',app)
    try{
 
+
+     const message = checkValidData(emailRef.current.value,passwordRef.current.value,nameRef.current.value)
+     console.log('iam message',message)
+     console.log(emailRef.current.value)
+     toast.error(message)
+
+    if(message==null){
     const userCredential=await createUserWithEmailAndPassword(auth, email, password)
     
         // Signed in
@@ -38,6 +53,7 @@ const Signup = () => {
               console.log('created user', user);
               navigate("/login")
       
+      }
     
       }catch(error){
         const errorCode = error.code;
@@ -45,6 +61,8 @@ const Signup = () => {
         console.log(errorCode, errorMessage);
         // ..
       }
+
+    
 
 
   }
@@ -63,10 +81,10 @@ const Signup = () => {
 
           <h1 className='font-bold text-xl mt-6'>Create your Account </h1>
 
-          <input onChange={(e)=>setUserName(e.target.value)} className='py-2 px-2 border-2 w-3/4 rounded-lg mt-10 border-black' type="text" placeholder='Username' />
-          <input onChange={(e) => setPhone(e.target.value)} className='py-2 px-2 border-2 w-3/4 rounded-lg mt-5 border-black' type="text" placeholder='Phone Number' />
-          <input onChange={(e)=>setEmail(e.target.value)} className='py-2 px-2 border-2 w-3/4 rounded-lg mt-5 border-black' type="text" placeholder='Email' />
-          <input onChange={(e)=>setPassword(e.target.value)} className='py-2 px-2 border-2 w-3/4 rounded-lg mt-5 border-black' type="password" placeholder='Password' />
+          <input ref={nameRef} onChange={(e)=>setUserName(e.target.value)} className='py-2 px-2 border-2 w-3/4 rounded-lg mt-10 border-black' type="text" placeholder='Username' />
+          <input  onChange={(e) => setPhone(e.target.value)} className='py-2 px-2 border-2 w-3/4 rounded-lg mt-5 border-black' type="text" placeholder='Phone Number' />
+          <input ref={emailRef} onChange={(e)=>setEmail(e.target.value)} className='py-2 px-2 border-2 w-3/4 rounded-lg mt-5 border-black' type="text" placeholder='Email' />
+          <input ref={passwordRef} onChange={(e)=>setPassword(e.target.value)} className='py-2 px-2 border-2 w-3/4 rounded-lg mt-5 border-black' type="password" placeholder='Password' />
 
           <button onClick={(e)=>handleCreate(e)} className='w-3/4 bg-black text-white font-bold text-center text-lg rounded-md py-3 mt-10'>Create</button>
 
